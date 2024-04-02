@@ -9,7 +9,7 @@ import type { HentaiRelease } from '../util/interfaces.js';
  * @param {number} [page=1] - Page number to be shown. Default is `1`.
  * @returns {Promise<HentaiRelease[]>} Array object of latest release.
  */
-export const release = async (page = 1): Promise<HentaiRelease[]> => {
+/*export const release = async (page = 1): Promise<HentaiRelease[]> => {
   const res = await axios.get(baseUrl + endpoints.latest.replace('__PAGE', page.toString()), header);
   const $ = load(res.data);
   const array: HentaiRelease[] = [];
@@ -22,6 +22,26 @@ export const release = async (page = 1): Promise<HentaiRelease[]> => {
       img,
       title,
       url
+    });
+  });
+  return array;
+};*/
+
+export const release = async (page = 1): Promise<HentaiRelease[]> => {
+  const res = await axios.get(baseUrl + endpoints.latest.replace('__PAGE', page.toString()), header);
+  const $ = load(res.data);
+  const array: HentaiRelease[] = [];
+
+  $('div.result div.top').each((_i, e) => {
+    const img = $(e).find('div.limitnjg > img').attr('src');
+    const title = $(e).find('h2 > a').text();
+    const url = $(e).find('h2 > a').attr('href');
+    const description = $(e).find('.desc').text(); // Menambahkan deskripsi
+    array.push({
+      img,
+      title,
+      url,
+      description // Menambahkan deskripsi ke objek HentaiRelease
     });
   });
   return array;
